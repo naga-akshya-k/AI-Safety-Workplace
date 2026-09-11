@@ -1,100 +1,116 @@
 {
   "status": "VERIFIED_AND_CURATED",
+  "primary_combination": [
+    "WHD",
+    "SH17",
+    "SHEL5K",
+    "SHWD"
+  ],
   "total_unique_samples": 216,
   "duplicates_pruned": 134,
   "splits": {
-    "train": 151,
-    "val": 31,
-    "test": 34
+    "train": 157,
+    "val": 37,
+    "test": 22
   },
   "split_ratios": {
-    "train": "69.9%",
-    "val": "14.4%",
-    "test": "15.7%"
+    "train": "72.7%",
+    "val": "17.1%",
+    "test": "10.2%"
   },
   "unified_classes": {
     "0": "worker",
-    "1": "helmet",
-    "2": "no_helmet",
-    "3": "safety_vest",
-    "4": "no_safety_vest",
-    "5": "safety_gloves",
-    "6": "safety_boots",
-    "7": "safety_goggles",
-    "8": "industrial_vehicle",
-    "9": "machinery_hazard",
-    "10": "fire_smoke",
-    "11": "spill_slip_hazard"
+    "1": "head",
+    "2": "helmet",
+    "3": "no_helmet",
+    "4": "safety_vest",
+    "5": "no_safety_vest",
+    "6": "safety_gloves",
+    "7": "safety_boots",
+    "8": "safety_goggles",
+    "9": "earmuffs",
+    "10": "industrial_vehicle",
+    "11": "machinery_hazard",
+    "12": "fire_smoke",
+    "13": "spill_slip_hazard"
   },
   "class_instance_counts": {
     "0": 350,
-    "1": 199,
-    "2": 151,
-    "3": 229,
-    "4": 121,
-    "5": 45,
+    "1": 140,
+    "2": 197,
+    "3": 153,
+    "4": 209,
+    "5": 141,
     "6": 49,
-    "7": 41,
-    "8": 70,
-    "9": 70,
-    "10": 40,
-    "11": 47
+    "7": 56,
+    "8": 44,
+    "9": 45,
+    "10": 70,
+    "11": 70,
+    "12": 44,
+    "13": 53
   },
   "source_datasets": {
     "WHD": {
       "full_name": "Workplace Hazards Dataset",
       "primary_domain": "Industrial Hazards & Dynamic Unsafe Situations",
       "license": "Academic / Open Research",
+      "strength": "Machinery pinch points, vehicle corridors, liquid chemical spills, fire/smoke",
       "mapping": {
         "worker": 0,
-        "machinery_hazard": 9,
-        "robotic_arm": 9,
-        "forklift": 8,
-        "industrial_vehicle": 8,
-        "fire": 10,
-        "smoke": 10,
-        "spill": 11,
-        "slip_hazard": 11
+        "machinery_hazard": 11,
+        "robotic_arm": 11,
+        "forklift": 10,
+        "industrial_vehicle": 10,
+        "fire": 12,
+        "smoke": 12,
+        "spill": 13,
+        "slip_hazard": 13
       }
     },
-    "Construction-PPE": {
-      "full_name": "Construction-PPE Dataset",
-      "primary_domain": "Personal Protective Equipment Compliance",
-      "license": "Public Research / CC-BY 4.0",
+    "SH17": {
+      "full_name": "SH17: Dataset for Human Safety and PPE Detection in Manufacturing",
+      "primary_domain": "Broad Personal Protective Equipment & Body Landmarks",
+      "license": "Open Source / Public Research",
+      "strength": "Comprehensive multi-gear PPE: helmet, vest, gloves, boots, goggles, earmuffs",
       "mapping": {
-        "person": 0,
-        "helmet": 1,
-        "no_helmet": 2,
-        "vest": 3,
-        "no_vest": 4,
-        "gloves": 5,
-        "no_gloves": null,
-        "boots": 6,
-        "no_boots": null,
-        "goggles": 7,
-        "no_goggles": null
-      }
-    },
-    "SHWD": {
-      "full_name": "Safety Helmet Wearing Dataset",
-      "primary_domain": "High-Density Helmet & Head Detection",
-      "license": "MIT Open Source",
-      "mapping": {
-        "hat": 1,
-        "person": 2
+        "Person": 0,
+        "Head": 1,
+        "Helmet": 2,
+        "Safety-vest": 4,
+        "Gloves": 6,
+        "Shoes": 7,
+        "Glasses": 8,
+        "Face-guard": 8,
+        "Earmuffs": 9,
+        "Hands": null,
+        "Foot": null,
+        "Face": null,
+        "Tools": null
       }
     },
     "SHEL5K": {
       "full_name": "SHEL5K: Extended Safety Helmet & Person Dataset",
       "primary_domain": "Multi-Class Worker, Head & Helmet Disambiguation",
       "license": "CC-BY 4.0",
+      "strength": "Disambiguates whole person, exposed head, and helmeted head",
       "mapping": {
-        "Helmet": 1,
-        "Head": 2,
-        "Head with helmet": 1,
+        "Helmet": 2,
+        "Head": 3,
+        "Head with helmet": 2,
         "Person with helmet": 0,
         "Person without helmet": 0,
         "Face": null
+      }
+    },
+    "SHWD": {
+      "full_name": "Safety Helmet Wearing Dataset",
+      "primary_domain": "High-Density Crowd & Distance Helmet Detection",
+      "license": "MIT Open Source",
+      "strength": "Robust helmet vs. exposed head detection in distant/dense crowds",
+      "mapping": {
+        "hat": 2,
+        "person": 3
       }
     }
   },

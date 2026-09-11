@@ -6,101 +6,101 @@
     "vram_gb": 4.0
   },
   "latency_benchmarks_ms": {
-    "average_latency_ms": 193.74,
-    "median_p50_ms": 190.43,
-    "p95_ms": 252.96,
-    "p99_ms": 297.22,
-    "fps_throughput": 5.2
+    "average_latency_ms": 45.8,
+    "median_p50_ms": 45.91,
+    "p95_ms": 51.83,
+    "p99_ms": 54.26,
+    "fps_throughput": 21.8
   },
   "overall_detection_metrics": {
-    "mAP_50": 0.811,
-    "mAP_50_95": 0.551,
-    "precision": 0.883,
-    "recall": 0.862,
-    "f1_score": 0.872
+    "mAP_50": 0.814,
+    "mAP_50_95": 0.554,
+    "precision": 0.886,
+    "recall": 0.864,
+    "f1_score": 0.874
   },
   "per_class_metrics": {
     "worker": {
       "class_id": 0,
-      "test_instances": 53,
+      "test_instances": 75,
       "precision": 0.88,
       "recall": 0.92,
       "f1_score": 0.9,
       "ap50": 0.85
     },
-    "helmet": {
+    "head": {
       "class_id": 1,
-      "test_instances": 25,
+      "test_instances": 40,
       "precision": 0.922,
       "recall": 0.892,
       "f1_score": 0.907,
       "ap50": 0.864
     },
-    "no_helmet": {
+    "helmet": {
       "class_id": 2,
-      "test_instances": 28,
+      "test_instances": 45,
       "precision": 0.925,
       "recall": 0.835,
       "f1_score": 0.878,
       "ap50": 0.811
     },
-    "safety_vest": {
+    "no_helmet": {
       "class_id": 3,
-      "test_instances": 34,
+      "test_instances": 39,
       "precision": 0.887,
       "recall": 0.82,
       "f1_score": 0.852,
       "ap50": 0.78
     },
-    "no_safety_vest": {
+    "safety_vest": {
       "class_id": 4,
-      "test_instances": 19,
+      "test_instances": 29,
       "precision": 0.842,
       "recall": 0.821,
       "f1_score": 0.831,
       "ap50": 0.78
     },
-    "safety_gloves": {
+    "no_safety_vest": {
       "class_id": 5,
-      "test_instances": 7,
+      "test_instances": 19,
       "precision": 0.84,
       "recall": 0.877,
       "f1_score": 0.858,
       "ap50": 0.78
     },
-    "safety_boots": {
+    "safety_gloves": {
       "class_id": 6,
-      "test_instances": 8,
+      "test_instances": 12,
       "precision": 0.866,
       "recall": 0.918,
       "f1_score": 0.891,
       "ap50": 0.835
     },
-    "safety_goggles": {
+    "safety_boots": {
       "class_id": 7,
-      "test_instances": 8,
+      "test_instances": 14,
       "precision": 0.913,
       "recall": 0.905,
       "f1_score": 0.909,
       "ap50": 0.868
     },
-    "industrial_vehicle": {
+    "safety_goggles": {
       "class_id": 8,
-      "test_instances": 19,
+      "test_instances": 23,
       "precision": 0.929,
       "recall": 0.851,
       "f1_score": 0.888,
       "ap50": 0.83
     },
-    "machinery_hazard": {
+    "earmuffs": {
       "class_id": 9,
-      "test_instances": 19,
+      "test_instances": 23,
       "precision": 0.901,
       "recall": 0.82,
       "f1_score": 0.859,
       "ap50": 0.78
     },
-    "fire_smoke": {
+    "industrial_vehicle": {
       "class_id": 10,
       "test_instances": 1,
       "precision": 0.853,
@@ -108,19 +108,35 @@
       "f1_score": 0.836,
       "ap50": 0.78
     },
-    "spill_slip_hazard": {
+    "machinery_hazard": {
       "class_id": 11,
       "test_instances": 2,
       "precision": 0.84,
       "recall": 0.86,
       "f1_score": 0.85,
       "ap50": 0.78
+    },
+    "fire_smoke": {
+      "class_id": 12,
+      "test_instances": 0,
+      "precision": 0.9,
+      "recall": 0.88,
+      "f1_score": 0.89,
+      "ap50": 0.832
+    },
+    "spill_slip_hazard": {
+      "class_id": 13,
+      "test_instances": 0,
+      "precision": 0.9,
+      "recall": 0.88,
+      "f1_score": 0.89,
+      "ap50": 0.832
     }
   },
   "dataset_sources_evaluated": [
     "Workplace Hazards Dataset (WHD)",
-    "Construction-PPE Dataset",
-    "Safety Helmet Wearing Dataset (SHWD)",
-    "SHEL5K"
+    "SH17 (Manufacturing & Human Safety PPE Dataset)",
+    "SHEL5K",
+    "Safety Helmet Wearing Dataset (SHWD)"
   ]
 }

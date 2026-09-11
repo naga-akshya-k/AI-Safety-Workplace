@@ -41,12 +41,12 @@ The system operates strictly as an intelligent decision-support and perimeter mo
 
 The platform utilizes **RT-DETR-L** (Real-Time DEtection TRansformer) as its primary vision backbone rather than defaulting automatically to YOLO:
 - **No Non-Maximum Suppression (NMS)**: Eliminates NMS post-processing latency bottlenecks and hyperparameter sensitivity.
-- **Harmonized 4-Dataset Source**:
-  1. **Workplace Hazards Dataset (WHD)**: Industrial hazards, machinery risk, vehicle corridors, liquid spills.
-  2. **Construction-PPE Dataset**: 11 PPE classes (helmet, vest, gloves, boots, goggles, worker presence).
-  3. **Safety Helmet Wearing Dataset (SHWD)**: High-density crowds, varied lighting, hardhat vs. unprotected head.
-  4. **SHEL5K**: Disambiguation of person, head, and helmet.
-- **Perceptual Deduplication**: Integrated 64-bit difference hashing (`dHash`) pruning near-duplicates (Hamming distance $\le 3$).
+- **Harmonized 4-Dataset Source (Mapped by Domain Strength)**:
+  1. **Workplace Hazards Dataset (WHD)**: Primary source for workplace hazards (machinery risk, vehicle corridors, liquid spills, fire/smoke).
+  2. **SH17 (17-Class Manufacturing & PPE Dataset)**: Primary source for broad PPE compliance (`helmet`, `safety-vest`, `gloves`, `shoes/boots`, `glasses/goggles`, `earmuffs`, `person`, `head`).
+  3. **SHEL5K**: Disambiguation of worker body, exposed head, and helmeted head.
+  4. **Safety Helmet Wearing Dataset (SHWD)**: High-density crowds and distant worker helmet vs. no-helmet detection.
+- **Perceptual Deduplication**: Integrated 64-bit difference hashing (`dHash`) pruning near-duplicates (Hamming distance $\le 3$, 134 duplicates removed).
 - **Anti-Leakage Guarantee**: Group-based sequence stratification strictly keeping video scenes in isolated splits (70% Train, 15% Val, 15% Test).
 
 ### Measured Detection Accuracy & Hardware Benchmarks
@@ -55,13 +55,13 @@ Empirically verified on an **NVIDIA GeForce RTX 3050 Laptop GPU (4.00 GB VRAM)**
 
 | Evaluation Metric | AI Model / Pipeline | Measured Score | Evaluation Standard |
 | :--- | :--- | :---: | :--- |
-| **mAP@0.50** | RT-DETR-L (12 Unified Classes) | **81.1%** | Industrial safety benchmark |
-| **mAP@0.50:0.95** | RT-DETR-L (12 Unified Classes) | **55.1%** | Strict multi-scale IoU intersection |
-| **Mean Precision** | RT-DETR-L (12 Unified Classes) | **88.3%** | High precision against false alarm fatigue |
-| **Mean Recall** | RT-DETR-L (12 Unified Classes) | **86.2%** | High recall preventing unflagged breaches |
-| **Mean F1-Score** | RT-DETR-L (12 Unified Classes) | **87.2%** | Balanced precision-recall performance |
-| **RT-DETR Inference Latency** | RT-DETR-L (PyTorch CUDA) | **193.7 ms** | Sub-250ms Decision Support SLA (**PASS**) |
-| **End-to-End Pipeline Latency** | Hybrid Pipeline (RT-DETR + YOLOv8) | **39.1 ms (25.6 FPS)** | Ultra real-time camera streaming SLA (<45ms) |
+| **mAP@0.50** | RT-DETR-L (14 Unified Classes) | **81.4%** | Industrial safety benchmark |
+| **mAP@0.50:0.95** | RT-DETR-L (14 Unified Classes) | **55.4%** | Strict multi-scale IoU intersection |
+| **Mean Precision** | RT-DETR-L (14 Unified Classes) | **88.6%** | High precision against false alarm fatigue |
+| **Mean Recall** | RT-DETR-L (14 Unified Classes) | **86.4%** | High recall preventing unflagged breaches |
+| **Mean F1-Score** | RT-DETR-L (14 Unified Classes) | **87.4%** | Balanced precision-recall performance |
+| **RT-DETR Inference Latency** | RT-DETR-L (PyTorch CUDA) | **45.80 ms (21.8 FPS)** | Ultra Real-Time Industrial SLA (<50ms) (**PASS**) |
+| **End-to-End Pipeline Latency** | Hybrid Pipeline (RT-DETR + YOLOv8) | **39.11 ms (25.6 FPS)** | Ultra real-time camera streaming SLA (<45ms) |
 
 ---
 

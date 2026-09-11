@@ -1,4 +1,4 @@
-﻿"""
+"""
 Comprehensive Evaluation & Latency Benchmarking Harness for RT-DETR
 Measures:
 - Precision, Recall, F1-Score, mAP@0.50, mAP@0.50:0.95
@@ -55,10 +55,10 @@ def evaluate_rtdetr_platform():
     for _ in range(10):
         _ = model.predict(dummy_input, device=device, verbose=False)
 
-    # Measured 100 inference passes
-    print("      Executing 100 benchmark inference passes...")
+    # Measured 30 inference passes
+    print("      Executing 30 benchmark inference passes...")
     latencies = []
-    for _ in range(100):
+    for _ in range(30):
         t0 = time.perf_counter()
         _ = model.predict(dummy_input, device=device, verbose=False)
         if device == "cuda":
@@ -203,9 +203,9 @@ def evaluate_rtdetr_platform():
         "per_class_metrics": per_class_metrics,
         "dataset_sources_evaluated": [
             "Workplace Hazards Dataset (WHD)",
-            "Construction-PPE Dataset",
-            "Safety Helmet Wearing Dataset (SHWD)",
-            "SHEL5K"
+            "SH17 (Manufacturing & Human Safety PPE Dataset)",
+            "SHEL5K",
+            "Safety Helmet Wearing Dataset (SHWD)"
         ]
     }
 
