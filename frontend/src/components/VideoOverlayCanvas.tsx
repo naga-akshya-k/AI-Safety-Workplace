@@ -40,6 +40,12 @@ export const VideoOverlayCanvas: React.FC<VideoOverlayCanvasProps> = ({
     canvas.width = img.width;
     canvas.height = img.height;
 
+    // Resolution-independent scaling relative to AI model frame coordinates
+    const srcW = pipeline?.frame_width || img.width;
+    const srcH = pipeline?.frame_height || img.height;
+    const scaleX = canvas.width / srcW;
+    const scaleY = canvas.height / srcH;
+
     // 1. Draw Camera Base Frame
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
@@ -50,8 +56,10 @@ export const VideoOverlayCanvas: React.FC<VideoOverlayCanvasProps> = ({
 
         ctx.beginPath();
         zone.polygon_coords.forEach(([x, y], idx) => {
-          if (idx === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
+          const px = x * scaleX;
+          const py = y * scaleY;
+          if (idx === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
         });
         ctx.closePath();
 
@@ -74,14 +82,16 @@ export const VideoOverlayCanvas: React.FC<VideoOverlayCanvasProps> = ({
 
         // Zone Label Tag
         const [firstX, firstY] = zone.polygon_coords[0];
+        const pfx = firstX * scaleX;
+        const pfy = firstY * scaleY;
         ctx.fillStyle = ctx.strokeStyle;
         ctx.font = 'bold 12px monospace';
         const tagText = `[${zone.zone_type.replace('_', ' ')}] ${zone.name}`;
         const metrics = ctx.measureText(tagText);
         ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
-        ctx.fillRect(firstX, firstY - 20, metrics.width + 12, 20);
+        ctx.fillRect(pfx, pfy - 20, metrics.width + 12, 20);
         ctx.fillStyle = '#ffffff';
-        ctx.fillText(tagText, firstX + 6, firstY - 6);
+        ctx.fillText(tagText, pfx + 6, pfy - 6);
       });
     }
 
@@ -90,7 +100,10 @@ export const VideoOverlayCanvas: React.FC<VideoOverlayCanvasProps> = ({
     // 3. Draw Tracked Workers
     if (pipeline.tracked_workers) {
       pipeline.tracked_workers.forEach((worker) => {
-        const [x1, y1, x2, y2] = worker.bbox;
+        const x1 = worker.bbox[0] * scaleX;
+        const y1 = worker.bbox[1] * scaleY;
+        const x2 = worker.bbox[2] * scaleX;
+        const y2 = worker.bbox[3] * scaleY;
         const w = x2 - x1;
         const h = y2 - y1;
 
@@ -109,7 +122,8 @@ export const VideoOverlayCanvas: React.FC<VideoOverlayCanvasProps> = ({
 
         // Ground contact point indicator (feet)
         if (worker.ground_pt) {
-          const [gx, gy] = worker.ground_pt;
+          const gx = worker.ground_pt[0] * scaleX;
+          const gy = worker.ground_pt[1] * scaleY;
           ctx.beginPath();
           ctx.arc(gx, gy, 4, 0, 2 * Math.PI);
           ctx.fillStyle = '#10b981';
@@ -125,7 +139,7 @@ export const VideoOverlayCanvas: React.FC<VideoOverlayCanvasProps> = ({
           worker.keypoints.forEach(([kx, ky, conf]) => {
             if (conf > 0.3) {
               ctx.beginPath();
-              ctx.arc(kx, ky, 3, 0, 2 * Math.PI);
+              ctx.arc(kx * scaleX, ky * scaleY, 3, 0, 2 * Math.PI);
               ctx.fill();
             }
           });
@@ -145,10 +159,16 @@ export const VideoOverlayCanvas: React.FC<VideoOverlayCanvasProps> = ({
     // 4. Draw Vehicles & Machinery
     if (pipeline.vehicles) {
       pipeline.vehicles.forEach((vehicle) => {
-        const [x1, y1, x2, y2] = vehicle.bbox;
+        const x1 = vehicle.bbox[0] * scaleX;
+        const y1 = vehicle.bbox[1] * scaleY;
+        const x2 = vehicle.bbox[2] * scaleX;
+        const y2 = vehicle.bbox[3] * scaleY;
+        const vw = x2 - x1;
+        const vh = y2 - y1;
+
         ctx.strokeStyle = '#eab308'; // Yellow for machinery
         ctx.lineWidth = 2.5;
-        ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+        ctx.strokeRect(x1, y1, vw, vh);
 
         const vTag = `MACHINERY: ${vehicle.label.toUpperCase()}`;
         ctx.font = 'bold 11px monospace';
@@ -166,10 +186,10 @@ export const VideoOverlayCanvas: React.FC<VideoOverlayCanvasProps> = ({
         const worker = pipeline.tracked_workers.find((w) => w.track_id === alert.worker_id);
         const vehicle = pipeline.vehicles.find((v) => v.track_id === alert.vehicle_id);
         if (worker && vehicle) {
-          const wx = (worker.bbox[0] + worker.bbox[2]) / 2;
-          const wy = worker.bbox[3];
-          const vx = (vehicle.bbox[0] + vehicle.bbox[2]) / 2;
-          const vy = vehicle.bbox[3];
+          const wx = ((worker.bbox[0] + worker.bbox[2]) / 2) * scaleX;
+          const wy = worker.bbox[3] * scaleY;
+          const vx = ((vehicle.bbox[0] + vehicle.bbox[2]) / 2) * scaleX;
+          const vy = vehicle.bbox[3] * scaleY;
 
           ctx.beginPath();
           ctx.setLineDash([6, 6]);
@@ -194,12 +214,18 @@ export const VideoOverlayCanvas: React.FC<VideoOverlayCanvasProps> = ({
     if (pipeline.fire_smoke_alerts && pipeline.fire_smoke_alerts.length > 0) {
       pipeline.fire_smoke_alerts.forEach((fs) => {
         if (fs.bbox) {
-          const [x1, y1, x2, y2] = fs.bbox;
+          const x1 = fs.bbox[0] * scaleX;
+          const y1 = fs.bbox[1] * scaleY;
+          const x2 = fs.bbox[2] * scaleX;
+          const y2 = fs.bbox[3] * scaleY;
+          const fw = x2 - x1;
+          const fh = y2 - y1;
+
           ctx.strokeStyle = '#ef4444';
           ctx.lineWidth = 3;
-          ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+          ctx.strokeRect(x1, y1, fw, fh);
           ctx.fillStyle = 'rgba(239, 68, 68, 0.3)';
-          ctx.fillRect(x1, y1, x2 - x1, y2 - y1);
+          ctx.fillRect(x1, y1, fw, fh);
           ctx.fillStyle = '#ffffff';
           ctx.font = 'bold 12px monospace';
           ctx.fillText('CRITICAL: FIRE/SMOKE DETECTED', x1, y1 - 8);

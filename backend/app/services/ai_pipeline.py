@@ -158,10 +158,13 @@ class SafetyPerceptionPipeline:
 
         # Highest risk level currently in frame
         max_risk_level = max([a.risk_level for a in risk_assessments], default=0)
+        h, w = frame.shape[:2]
 
         return {
             "camera_id": camera_id,
             "timestamp": start_time,
+            "frame_width": w,
+            "frame_height": h,
             "max_risk_level": max_risk_level,
             "risk_assessments": [a.to_dict() for a in risk_assessments],
             "tracked_workers": tracked_workers,

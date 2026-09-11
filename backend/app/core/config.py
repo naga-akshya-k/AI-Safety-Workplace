@@ -16,7 +16,7 @@ class Settings(BaseModel):
     DATABASE_URL: str = "sqlite+aiosqlite:///./ai_safety.db"
     
     # Storage Paths
-    BASE_DIR: str = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    BASE_DIR: str = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
     DATA_DIR: str = os.path.join(BASE_DIR, "data")
     EVIDENCE_DIR: str = os.path.join(DATA_DIR, "evidence")
     MODEL_WEIGHTS_DIR: str = os.path.join(BASE_DIR, "models_cache")

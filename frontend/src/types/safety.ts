@@ -100,6 +100,8 @@ export interface StreamHealth {
 export interface PipelineOutput {
   camera_id: number;
   timestamp: number;
+  frame_width?: number;
+  frame_height?: number;
   max_risk_level: number;
   risk_assessments: RiskAssessment[];
   tracked_workers: TrackedWorker[];

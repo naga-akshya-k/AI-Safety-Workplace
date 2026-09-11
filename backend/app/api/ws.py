@@ -88,16 +88,11 @@ async def websocket_stream_endpoint(websocket: WebSocket, camera_id: int):
                     db=db
                 )
 
-            # Compress frame to JPEG for live web preview
+            # Compress frame to JPEG for live web preview at native resolution (1:1 coordinate alignment)
             h, w = frame.shape[:2]
-            # Resize if large to ensure ultra-low latency streaming
-            if w > 854:
-                scale = 854.0 / w
-                display_frame = cv2.resize(frame, (854, int(h * scale)))
-            else:
-                display_frame = frame
+            display_frame = frame
 
-            _, buffer = cv2.imencode('.jpg', display_frame, [cv2.IMWRITE_JPEG_QUALITY, 65])
+            _, buffer = cv2.imencode('.jpg', display_frame, [cv2.IMWRITE_JPEG_QUALITY, 70])
             jpg_base64 = base64.b64encode(buffer).decode('utf-8')
 
             # Send payload
