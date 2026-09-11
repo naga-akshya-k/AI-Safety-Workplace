@@ -1,0 +1,11 @@
+{
+  "device": "cuda",
+  "gpu_model": "NVIDIA GeForce RTX 3050 A Laptop GPU",
+  "base_detector_ms": 12.66,
+  "base_detector_fps": 79.0,
+  "pose_detector_ms": 14.71,
+  "pose_detector_fps": 68.0,
+  "pipeline_e2e_ms": 39.11,
+  "pipeline_e2e_fps": 25.6,
+  "status": "PASS: Ultra Real-Time Industrial Performance (<45ms)"
+}
