@@ -1,4 +1,4 @@
-﻿# Python
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
@@ -60,6 +60,9 @@ backend/models_cache/
 !**/evidence/.gitkeep
 **/synthetic_stress/*
 !**/synthetic_stress/.gitkeep
+data/raw_datasets/
+data/*.zip
+data/*.tar.gz
 
 # Node / Frontend
 node_modules/
