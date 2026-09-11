@@ -25,7 +25,7 @@ The system operates strictly as an intelligent decision-support and perimeter mo
 
 ## 9 Prioritized Industrial Hazards Implemented
 
-1. **Worker Detection & Tracking**: Anchor-free YOLOv8 perception coupled with ByteTrack Multi-Object Tracking maintaining consistent identities across occlusions and clutter.
+1. **Worker Detection & Tracking**: Transformer-based RT-DETR-L & YOLOv8 perception coupled with ByteTrack Multi-Object Tracking maintaining consistent identities across occlusions and clutter.
 2. **PPE Compliance (Hardhat & High-Visibility Vest)**: Hierarchical spatial anatomical evaluation (Head 25% region $\rightarrow$ Hardhat; Torso 15–70% region $\rightarrow$ High-Vis Vest). Prevents false passes when hardhats are carried in hand or vests are obscured.
 3. **Restricted & Hazardous Zone Geofencing**: Shapely polygon geofencing projected to **Ground Contact Points** (worker feet / ankle keypoints rather than bounding box center) with configurable dwell time confirmation windows.
 4. **Worker-to-Hazard & Forklift Proximity**: Perspective-calibrated distance estimation and Time-to-Collision (TTC) velocity vector calculation for moving machinery and industrial vehicles.
@@ -87,9 +87,9 @@ The system includes pre-calibrated industrial camera setups with sample scenario
       ┌────────────────────────────────────────────────────────┐
       │          FASTAPI ASYNC BACKEND (Python 3.11)           │
       │                                                        │
-      │  ┌─────────────────┐       ┌────────────────────────┐  │
-      │  │ YOLOv8 Perception│ ───► │  ByteTrack MOT Tracker │  │
-      │  └────────┬────────┘       └───────────┬────────────┘  │
+      │  ┌────────────────────────┐   ┌────────────────────────┐  │
+      │  │ RT-DETR / YOLOv8 Vision│──►│  ByteTrack MOT Tracker │  │
+      │  └────────┬───────────────┘   └───────────┬────────────┘  │
       │           │                            │               │
       │           ▼                            ▼               │
       │  ┌─────────────────┐       ┌────────────────────────┐  │
@@ -138,8 +138,8 @@ The system includes pre-calibrated industrial camera setups with sample scenario
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/<your-username>/ai_safety.git
-cd ai_safety
+git clone https://github.com/naga-akshya-k/AI-Safety-Workplace.git
+cd AI-Safety-Workplace
 ```
 
 ### 2. Backend Setup (Python 3.11)
