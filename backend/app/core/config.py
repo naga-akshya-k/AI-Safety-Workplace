@@ -21,6 +21,10 @@ class Settings(BaseModel):
     EVIDENCE_DIR: str = os.path.join(DATA_DIR, "evidence")
     MODEL_WEIGHTS_DIR: str = os.path.join(BASE_DIR, "models_cache")
     
+    # Model Selection & Vision Architecture
+    PRIMARY_DETECTOR: str = "RT-DETR"  # "RT-DETR" (Primary) or "YOLOv8" (Fallback)
+    RTDETR_WEIGHTS: str = os.path.join(BASE_DIR, "rtdetr-l.pt")
+    
     # Vision & Safety Thresholds
     PERSON_DETECTION_CONF: float = 0.35  # Biased toward high recall to avoid missed workers
     PPE_DETECTION_CONF: float = 0.40

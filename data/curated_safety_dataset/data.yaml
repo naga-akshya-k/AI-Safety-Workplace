@@ -1,0 +1,19 @@
+# Enterprise AI Safety & Workplace Intelligence Unified Dataset
+path: C:/Users/kthir/Downloads/ai_safety/data/curated_safety_dataset
+train: images/train
+val: images/val
+test: images/test
+
+names:
+  0: worker
+  1: helmet
+  2: no_helmet
+  3: safety_vest
+  4: no_safety_vest
+  5: safety_gloves
+  6: safety_boots
+  7: safety_goggles
+  8: industrial_vehicle
+  9: machinery_hazard
+  10: fire_smoke
+  11: spill_slip_hazard

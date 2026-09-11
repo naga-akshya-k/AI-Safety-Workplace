@@ -24,10 +24,25 @@ class VisionDetector:
         self.use_half = (self.device == "cuda")
         print(f"[VisionDetector] Initializing AI models on device: {self.device} (FP16: {self.use_half})")
         
-        # 1. Base Detector for Workers and Industrial Equipment
+        # 1. Base Detector for Workers and Industrial Equipment (Fallback)
         self.base_model = YOLO("yolov8n.pt")
         # 2. Pose Model for Fall Detection & Body Kinematics
         self.pose_model = YOLO("yolov8n-pose.pt")
+        
+        # 3. Primary RT-DETR Model (Real-Time DEtection TRansformer)
+        self.rtdetr_model = None
+        if getattr(settings, "PRIMARY_DETECTOR", "RT-DETR") == "RT-DETR":
+            weights_path = getattr(settings, "RTDETR_WEIGHTS", "rtdetr-l.pt")
+            if os.path.exists(weights_path):
+                try:
+                    from ultralytics import RTDETR
+                    print(f"[VisionDetector] Loading Primary RT-DETR from {weights_path}...")
+                    self.rtdetr_model = RTDETR(weights_path)
+                    print("[VisionDetector] Primary RT-DETR transformer perception engine ACTIVE.")
+                except Exception as e:
+                    print(f"[VisionDetector] Warning: Could not initialize RT-DETR ({e}). Using YOLOv8 fallback.")
+            else:
+                print(f"[VisionDetector] RT-DETR weights not found at {weights_path}, using YOLOv8 fallback.")
         
         print("[VisionDetector] Models successfully loaded and cached.")
 
@@ -215,30 +230,61 @@ class VisionDetector:
                         "ground_pt": [(x1 + x2) / 2.0, y2]
                     })
 
-            # 2. Base model pass
-            base_results = self.base_model(
-                frame,
-                conf=0.40,
-                classes=[2, 5, 7],
-                device=self.device,
-                verbose=False
-            )[0]
+            # 2. Primary RT-DETR / Fallback Base model pass for industrial vehicles and machinery
+            if self.rtdetr_model is not None:
+                det_res = self.rtdetr_model.predict(
+                    frame,
+                    conf=0.35,
+                    device=self.device,
+                    verbose=False
+                )[0]
+                if det_res.boxes is not None and len(det_res.boxes) > 0:
+                    r_boxes = det_res.boxes.xyxy.cpu().numpy()
+                    r_confs = det_res.boxes.conf.cpu().numpy()
+                    r_classes = det_res.boxes.cls.cpu().numpy()
+                    for i, box in enumerate(r_boxes):
+                        x1, y1, x2, y2 = [float(v) for v in box]
+                        cls_id = int(r_classes[i])
+                        conf_val = float(r_confs[i])
+                        if cls_id in [2, 5, 7]:  # car, bus, truck -> forklift / industrial vehicle
+                            vehicles.append({
+                                "bbox": [x1, y1, x2, y2],
+                                "confidence": conf_val,
+                                "label": "forklift",
+                                "ground_pt": [(x1 + x2) / 2.0, y2]
+                            })
+                        elif cls_id == 0 and len(workers) == 0:
+                            workers.append({
+                                "bbox": [x1, y1, x2, y2],
+                                "confidence": conf_val,
+                                "label": "worker",
+                                "keypoints": None,
+                                "ground_pt": [(x1 + x2) / 2.0, y2]
+                            })
+            else:
+                base_results = self.base_model(
+                    frame,
+                    conf=0.40,
+                    classes=[2, 5, 7],
+                    device=self.device,
+                    verbose=False
+                )[0]
 
-            if base_results.boxes is not None and len(base_results.boxes) > 0:
-                v_boxes = base_results.boxes.xyxy.cpu().numpy()
-                v_confs = base_results.boxes.conf.cpu().numpy()
-                v_classes = base_results.boxes.cls.cpu().numpy()
+                if base_results.boxes is not None and len(base_results.boxes) > 0:
+                    v_boxes = base_results.boxes.xyxy.cpu().numpy()
+                    v_confs = base_results.boxes.conf.cpu().numpy()
+                    v_classes = base_results.boxes.cls.cpu().numpy()
 
-                for i, box in enumerate(v_boxes):
-                    x1, y1, x2, y2 = [float(v) for v in box]
-                    cls_id = int(v_classes[i])
-                    label = "forklift" if cls_id == 7 else "machinery"
-                    vehicles.append({
-                        "bbox": [x1, y1, x2, y2],
-                        "confidence": float(v_confs[i]),
-                        "label": label,
-                        "ground_pt": [(x1 + x2) / 2.0, y2]
-                    })
+                    for i, box in enumerate(v_boxes):
+                        x1, y1, x2, y2 = [float(v) for v in box]
+                        cls_id = int(v_classes[i])
+                        label = "forklift" if cls_id == 7 else "machinery"
+                        vehicles.append({
+                            "bbox": [x1, y1, x2, y2],
+                            "confidence": float(v_confs[i]),
+                            "label": label,
+                            "ground_pt": [(x1 + x2) / 2.0, y2]
+                        })
 
         # 3. If frame has synthetic / diagrammatic elements with 0 neural detections, use simulation extractor
         if len(workers) == 0:

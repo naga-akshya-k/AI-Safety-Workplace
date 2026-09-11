@@ -8,8 +8,8 @@ async def verify_hazards():
     print("COMPREHENSIVE MULTI-CAMERA INDUSTRIAL HAZARD VALIDATION (EXTENDED)")
     print("=" * 65)
 
-    base_ws = "ws://127.0.0.1:8000"
-    base_http = "http://127.0.0.1:8000"
+    base_ws = "ws://127.0.0.1:8080"
+    base_http = "http://127.0.0.1:8080"
 
     cameras_to_test = [
         (1, "Warehouse Forklift & Proximity", 40),
